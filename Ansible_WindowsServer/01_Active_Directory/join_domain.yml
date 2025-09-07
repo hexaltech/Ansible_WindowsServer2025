@@ -8,7 +8,7 @@
       microsoft.ad.membership:
         dns_domain_name: "hexaltech.lan"
         domain_admin_user: "hexaltech\\Administrateur"
-        domain_admin_password: "85432196Alex*"
+        domain_admin_password: "votre_mot_de_passe"
         hostname: "{{ inventory_hostname }}"
         state: domain
         reboot: yes
