@@ -1,0 +1,9 @@
+---
+- name: Redémarrage rapide des serveurs Windows
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: Redémarrer immédiatement
+      win_reboot:
+        reboot_timeout: 300

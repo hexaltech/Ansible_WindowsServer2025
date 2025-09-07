@@ -1,0 +1,14 @@
+- name: Intégration des serveurs au domaine
+  hosts:
+    - fs1
+    - web1
+  gather_facts: no
+  tasks:
+    - name: Joindre le serveur au domaine
+      microsoft.ad.membership:
+        dns_domain_name: "hexaltech.lan"
+        domain_admin_user: "hexaltech\\Administrateur"
+        domain_admin_password: "85432196Alex*"
+        hostname: "{{ inventory_hostname }}"
+        state: domain
+        reboot: yes

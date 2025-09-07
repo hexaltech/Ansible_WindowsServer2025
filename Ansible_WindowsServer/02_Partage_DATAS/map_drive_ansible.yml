@@ -1,0 +1,21 @@
+---
+- name: "Déployer le mapping lecteur Z sur les PC Windows"
+  hosts: all
+  tasks:
+    - name: Créer le dossier C:\Scripts
+      win_file:
+        path: C:\Scripts
+        state: directory
+
+    - name: Copier le script batch map_drive.bat
+      win_copy:
+        src: files/map_drive.bat
+        dest: C:\Scripts\map_drive.bat
+
+    - name: Copier le script PowerShell pour créer la tâche planifiée
+      win_copy:
+        src: files/map_drive.ps1
+        dest: C:\Scripts\map_drive.ps1
+
+    - name: Exécuter le script PowerShell pour créer la tâche planifiée
+      win_shell: powershell.exe -ExecutionPolicy Bypass -File C:\Scripts\map_drive.ps1

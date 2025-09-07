@@ -1,0 +1,57 @@
+---
+- name: Installer IIS et créer un site web de test
+  hosts: web1
+  collections:
+    - ansible.windows
+  vars:
+    site_name: hexaltech.web
+    site_path: C:/inetpub/hexaltech.web
+    site_port: 8080
+
+  tasks:
+    - name: Installer le rôle IIS de base avec les outils de gestion
+      win_feature:
+        name:
+          - Web-Server
+          - Web-WebServer
+          - Web-Common-Http
+          - Web-Default-Doc
+          - Web-Dir-Browsing
+          - Web-Http-Errors
+          - Web-Static-Content
+          - Web-Http-Redirect
+          - Web-Health
+          - Web-Http-Logging
+          - Web-Request-Monitor
+          - Web-Performance
+          - Web-Stat-Compression
+          - Web-Security
+          - Web-Filtering
+          - Web-Mgmt-Tools
+          - Web-Mgmt-Console
+        state: present
+        include_sub_features: yes
+        include_management_tools: yes
+
+    - name: S'assurer que le service W3SVC (IIS) est démarré et activé
+      win_service:
+        name: W3SVC
+        start_mode: auto
+        state: started
+
+    - name: Créer le dossier pour le site hexaltech.web
+      win_file:
+        path: "{{ site_path }}"
+        state: directory
+
+    - name: Créer une page index.html de test
+      win_copy:
+        dest: "{{ site_path }}/index.html"
+        content: "<h1>Hello Hexaltech!</h1>"
+
+    - name: Créer le site web hexaltech.web via PowerShell
+      win_shell: |
+        Import-Module WebAdministration
+        if (-not (Test-Path IIS:\Sites\{{ site_name }})) {
+          New-Item IIS:\Sites\{{ site_name }} -PhysicalPath "{{ site_path }}" -Bindings @{protocol='http';bindingInformation="*:{{ site_port }}:"}
+        }

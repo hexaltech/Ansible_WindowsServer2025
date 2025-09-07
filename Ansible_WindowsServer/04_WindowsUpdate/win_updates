@@ -1,0 +1,10 @@
+- name: Installer toutes les mises à jour importantes
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Installer les mises à jour depuis WSUS ou Windows Update
+      win_updates:
+        category_names:
+          - SecurityUpdates     # Met à jour les correctifs de sécurité
+          - CriticalUpdates     # Met à jour les correctifs critiques
+        reboot: yes              # Redémarre le serveur si nécessaire après installation
