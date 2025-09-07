@@ -4,7 +4,7 @@
   gather_facts: no
   vars:
     domain_name: "hexaltech.lan"
-    safe_mode_password: "85432196Alex*"
+    safe_mode_password: "votre_mot_de_passe"
   tasks:
     - name: Installer le rôle AD DS
       win_feature:
