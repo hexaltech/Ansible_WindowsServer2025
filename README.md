@@ -48,8 +48,10 @@ Ansible_WindowsServer/
   * Hostnames configurés
   * DNS pointant initialement vers DC1
   * Interface graphique ou CLI disponible
+  * Tous les serveurs Windows doivent avoir RDP activé pour faciliter les tests.
 * **WinRM HTTPS** configuré sur chaque serveur.
 * **Compte Administrateur** avec mot de passe défini dans Vault ou hosts.yml.
+
 
 ---
 
@@ -179,4 +181,5 @@ ansible-playbook -i hosts.yml reboot.yml --vault-password-file ~/.vault_pass.txt
 
 ## 📄 Licence
 
-Projet développé à des fins pédagogiques et administrat
+Projet développé à des fins pédagogiques et administratives internes.
+Vous êtes libre de l’adapter selon vos besoins.
