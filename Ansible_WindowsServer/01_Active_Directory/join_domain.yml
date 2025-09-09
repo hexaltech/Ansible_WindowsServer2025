@@ -1,0 +1,18 @@
+---
+- name: Intégration des serveurs au domaine
+  hosts:
+    - fs1
+    - web1
+  gather_facts: no
+  vars_files:
+    - ../group_vars/all/vault.yml   # fichier Vault
+
+  tasks:
+    - name: Joindre le serveur au domaine
+      microsoft.ad.membership:
+        dns_domain_name: "{{ domain_name }}"                      # depuis Vault
+        domain_admin_user: "{{ domain_admin_user }}"              # depuis Vault
+        domain_admin_password: "{{ domain_admin_password }}"      # depuis Vault
+        hostname: "{{ inventory_hostname }}"
+        state: domain
+        reboot: yes

@@ -1,0 +1,26 @@
+---
+- name: Création du dossier, ACL et partage réseau
+  hosts: fs1
+  gather_facts: no
+  vars_files:
+    - /root/Ansible_WindowsServer/group_vars/all/vault.yml
+  tasks:
+    - name: Créer le dossier D:\Partage_DATAS
+      ansible.windows.win_file:
+        path: D:\Partage_DATAS
+        state: directory
+
+    - name: Donner tous les droits NTFS au groupe "Utilisateurs du domaine"
+      ansible.windows.win_acl:
+        path: D:\Partage_DATAS
+        user: "{{ domain_users_group }}"
+        rights: FullControl
+        type: allow
+        state: present
+
+    - name: Créer le partage réseau SMB Partage_DATAS
+      ansible.windows.win_share:
+        name: Partage_DATAS
+        path: D:\Partage_DATAS
+        full: "{{ domain_users_group }}"
+        state: present

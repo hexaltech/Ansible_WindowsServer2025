@@ -1,0 +1,15 @@
+Prérequis
+
+VM Windows Server 2025 : DC1, FS1, WEB1
+
+IP fixe : DC1=192.168.100.250, FS1=192.168.100.251, WEB1=192.168.100.252
+
+Hostnames configurés
+
+DNS configuré (initialement vers DC1)
+
+Debian 12 : machine ansible_winserver2025
+
+IP fixe : 192.168.100.253
+
+Interface graphique ou CLI

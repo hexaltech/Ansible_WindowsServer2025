@@ -1,0 +1,48 @@
+---
+- name: Déployer AnyDesk sur FS1 et le copier dans le partage réseau
+  hosts: fs1
+  gather_facts: no
+  vars_files:
+    - /root/Ansible_WindowsServer/group_vars/all/vault.yml
+  vars:
+    anydesk_file: AnyDesk.exe
+    anydesk_local_temp: "C:/Windows/Temp/AnyDesk.exe"
+    anydesk_share_path: "D:/Partage_DATAS/AnyDesk.exe"
+    anydesk_share: "\\\\fs1\\Partage_DATAS"
+
+  tasks:
+    - name: Copier AnyDesk depuis Ansible vers FS1 (temp)
+      win_copy:
+        src: /root/Ansible_WindowsServer/02_Partage_DATAS/files/{{ anydesk_file }}
+        dest: "{{ anydesk_local_temp }}"
+
+    - name: Déplacer AnyDesk dans le partage réseau local D:\Partage_DATAS
+      win_shell: |
+        Move-Item -Path "{{ anydesk_local_temp }}" -Destination "{{ anydesk_share_path }}" -Force
+      args:
+        executable: powershell
+
+- name: Créer un raccourci AnyDesk sur le bureau public qui pointe vers le partage réseau
+  hosts: all
+  gather_facts: no
+  vars_files:
+    - /root/Ansible_WindowsServer/group_vars/all/vault.yml
+  vars:
+    anydesk_file: AnyDesk.exe
+    anydesk_share: "\\\\fs1\\Partage_DATAS"
+    public_desktop: "C:/Users/Public/Desktop"
+    shortcut_name: "AnyDesk.lnk"
+
+  tasks:
+    - name: Créer un raccourci vers AnyDesk dans le partage
+      win_shell: |
+        $target = "{{ anydesk_share }}\\{{ anydesk_file }}"
+        $shortcutPath = [System.IO.Path]::Combine("{{ public_desktop }}", "{{ shortcut_name }}")
+        $WshShell = New-Object -ComObject WScript.Shell
+        $shortcut = $WshShell.CreateShortcut($shortcutPath)
+        $shortcut.TargetPath = $target
+        $shortcut.WorkingDirectory = "{{ anydesk_share }}"
+        $shortcut.IconLocation = "$target,0"
+        $shortcut.Save()
+      args:
+        executable: powershell

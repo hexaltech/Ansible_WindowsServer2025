@@ -1,0 +1,11 @@
+# inventory_ldap.yml
+plugin: community.general.ldap
+host: ldap://192.168.100.250
+bind_dn: "Administrateur@hexaltech.lan"
+bind_password: "85432196Alex*"  # ou !vault pour chiffré
+base_dn: "DC=hexaltech,DC=lan"
+filter: "(objectClass=computer)"
+key_attr: dNSHostName
+groups:
+  WindowsServers:
+    filter: "(objectClass=computer)"
