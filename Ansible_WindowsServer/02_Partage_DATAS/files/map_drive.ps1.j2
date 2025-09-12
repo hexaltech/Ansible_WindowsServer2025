@@ -1,0 +1,19 @@
+# Variables injectées par Ansible Vault
+$windows_user = "{{ windows_server_user }}"             # ex: Administrateur@hexaltech.lan
+$windows_password = "{{ windows_server_password_active_directory }}"  # stocké dans Vault
+$domain_name = "{{ domain_name }}"                      # ex: HEXALTECH
+
+# Construire le nom complet de l'utilisateur
+$full_user = "$($domain_name.Split('.')[0])\$($windows_user.Split('@')[0])"
+
+# Convertir le mot de passe Vault en SecureString
+$securePass = ConvertTo-SecureString $windows_password -AsPlainText -Force
+$cred = New-Object System.Management.Automation.PSCredential ($full_user, $securePass)
+
+# Supprimer Z: si déjà existant
+try { Remove-PSDrive -Name Z -Force } catch {}
+
+# Mapper le lecteur Z: de façon persistante
+New-PSDrive -Name Z -PSProvider FileSystem -Root "\\FS1\Partage_DATAS" -Credential $cred -Persist
+
+Write-Host ("Lecteur Z: mappé avec succès pour {0}" -f $full_user)
