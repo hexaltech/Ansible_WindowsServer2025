@@ -24,8 +24,7 @@ Ansible_WindowsServer/
 │   ├── map_drive_ansible.yml
 │   └── files/
 │       ├── AnyDesk.exe
-│       ├── map_drive.bat
-│       └── map_drive.ps1
+│       ├── map_drive.ps1.j2  
 ├── 03_IIS/                       # Déploiement d’IIS et d’applications
 │   ├── IIS_HexaltechWEB.yml
 │   └── anydesk.yml
