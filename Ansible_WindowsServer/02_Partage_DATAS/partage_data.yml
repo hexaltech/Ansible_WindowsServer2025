@@ -4,6 +4,9 @@
   gather_facts: no
   vars_files:
     - /root/Ansible_WindowsServer/group_vars/all/vault.yml
+  vars:
+    ansible_user: "{{ domain_admin_user }}"
+    ansible_password: "{{ windows_server_password_active_directory }}"
   tasks:
     - name: Créer le dossier D:\Partage_DATAS
       ansible.windows.win_file:
@@ -13,7 +16,7 @@
     - name: Donner tous les droits NTFS au groupe "Utilisateurs du domaine"
       ansible.windows.win_acl:
         path: D:\Partage_DATAS
-        user: "{{ domain_users_group }}"
+        user: "{{ domain_admin_user}}"
         rights: FullControl
         type: allow
         state: present
