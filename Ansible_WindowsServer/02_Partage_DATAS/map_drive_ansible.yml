@@ -1,21 +1,28 @@
----
-- name: "Déployer le mapping lecteur Z sur les PC Windows"
+- name: Créer tâche planifiée pour mapper Z
   hosts: all
+  gather_facts: no
+  vars_files:
+    - vault.yml
   tasks:
-    - name: Créer le dossier C:\Scripts
-      win_file:
+
+    - name: Créer le dossier C:\Scripts si inexistant
+      ansible.windows.win_file:
         path: C:\Scripts
         state: directory
 
-    - name: Copier le script batch map_drive.bat
-      win_copy:
-        src: files/map_drive.bat
-        dest: C:\Scripts\map_drive.bat
-
-    - name: Copier le script PowerShell pour créer la tâche planifiée
-      win_copy:
-        src: files/map_drive.ps1
+    - name: Copier le script PowerShell sécurisé via template
+      ansible.windows.win_template:
+        src: files/map_drive.ps1.j2
         dest: C:\Scripts\map_drive.ps1
+        force: yes
 
-    - name: Exécuter le script PowerShell pour créer la tâche planifiée
-      win_shell: powershell.exe -ExecutionPolicy Bypass -File C:\Scripts\map_drive.ps1
+    - name: Créer la tâche planifiée pour mapper Z au logon
+      ansible.windows.win_shell: |
+        powershell.exe -ExecutionPolicy Bypass -Command "
+          try { Unregister-ScheduledTask -TaskName 'MapZDrive' -Confirm:$false } catch {}
+          $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-ExecutionPolicy Bypass -File C:\Scripts\map_drive.ps1'
+          $trigger = New-ScheduledTaskTrigger -AtLogOn
+          Register-ScheduledTask -TaskName 'MapZDrive' -Action $action -Trigger $trigger -RunLevel Limited -Force
+        "
+      args:
+        executable: powershell.exe
