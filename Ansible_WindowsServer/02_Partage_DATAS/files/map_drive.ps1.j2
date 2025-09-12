@@ -16,4 +16,4 @@ try { Remove-PSDrive -Name Z -Force } catch {}
 # Mapper le lecteur Z: de façon persistante
 New-PSDrive -Name Z -PSProvider FileSystem -Root "\\FS1\Partage_DATAS" -Credential $cred -Persist
 
-Write-Host ("Lecteur Z: mappé avec succès pour {0}" -f $full_user)
+Write-Host ("Lecteur Z: mappe avec virilite pour {0}" -f $full_user)
