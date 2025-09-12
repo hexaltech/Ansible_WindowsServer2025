@@ -3,7 +3,7 @@
   hosts: dc1
   gather_facts: no
   vars_files:
-    - /root/Ansible_WindowsServer/group_vars/all/vault.yml   # fichier Vault
+    - /root/Ansible_WindowsServer/group_vars/all/vault.yml
 
   tasks:
 
@@ -28,7 +28,7 @@
 
     - name: Créer les utilisateurs dans l'OU Hexaltech
       win_shell: |
-        $Password = ConvertTo-SecureString "{{ ad_users_password }}" -AsPlainText -Force
+        $Password = ConvertTo-SecureString "{{ windows_server_password_active_directory }}" -AsPlainText -Force
         if (-not (Get-ADUser -Filter "SamAccountName -eq '{{ item.username }}'" -ErrorAction SilentlyContinue)) {
           New-ADUser -Name "{{ item.username }}" -SamAccountName "{{ item.username }}" -AccountPassword $Password -Enabled $true -Path "OU=Hexaltech,DC=hexaltech,DC=lan"
         }
